@@ -128,7 +128,7 @@ export default function MainPage() {
     </div>
   );
 
-  function useValueInclude(initialValue: boolean) {
+function useValueInclude(initialValue: boolean) {
     const [isValueInclude, setIsValueInclude] = useState(initialValue);
 
     function handleValueChange() {
