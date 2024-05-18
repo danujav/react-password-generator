@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 export default function MainPage() {
   const [range, setRange] = useState(8);
-  const [pw, setPw] = useState("ufdDRhcw");
+  const [pw, setPw] = useState("");
   const [isNumberInclude, setIsNumberInclude] = useState(false);
   const [isCharInclude, setIsCharInclude] = useState(false);
+
+  const passwordRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const pw = generatePw();
@@ -41,7 +43,7 @@ export default function MainPage() {
       if (isNumberInclude && password.length < range) {
         password += numbers.charAt(Math.floor(Math.random() * numbers.length));
       }
-      
+
       if (isCharInclude && password.length < range) {
         password += chars.charAt(Math.floor(Math.random() * chars.length));
       }
@@ -67,6 +69,11 @@ export default function MainPage() {
     // console.log(isCharInclude); // react runs Asynchronously. that' why this not showing updated value. if you want to see use useEffect
   }
 
+  function handleCopyText() {
+    window.navigator.clipboard.writeText(pw);
+    passwordRef.current?.select();
+  }
+
   return (
     <div className="bg-slate-700 h-screen flex justify-center items-center">
       <div className="bg-slate-300 bg-opacity-40 w-1/2 flex flex-col p-5">
@@ -79,8 +86,12 @@ export default function MainPage() {
             type="text"
             readOnly
             value={pw}
+            ref={passwordRef}
           />
-          <button className="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+          <button
+            onClick={handleCopyText}
+            className="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
             <svg
               className="h-5 w-5 mr-2"
               xmlns="http://www.w3.org/2000/svg"
