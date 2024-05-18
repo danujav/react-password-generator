@@ -1,11 +1,70 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function MainPage() {
   const [range, setRange] = useState(8);
   const [pw, setPw] = useState("ufdDRhcw");
+  const [isNumberInclude, setIsNumberInclude] = useState(false);
+  const [isCharInclude, setIsCharInclude] = useState(false);
+
+  useEffect(() => {
+    const pw = generatePw();
+    setPw(pw);
+  }, [range, isNumberInclude, isCharInclude]);
+
+  function generateAlphabet(): string {
+    let alphabet = "";
+
+    // For Uppercase A-Z
+    for (let i = 65; i <= 90; i++) {
+      alphabet += String.fromCharCode(i);
+    }
+
+    // For Lowercase a-z
+    for (let i = 97; i <= 122; i++) {
+      alphabet += String.fromCharCode(i);
+    }
+
+    return alphabet;
+  }
+
+  function generatePw(): string {
+    const alphabet = generateAlphabet();
+    console.log(alphabet);
+
+    const chars = "!@#$%^&*()_+-=[]{}|;:,.<>?";
+    const numbers = "0123456789";
+
+    let password = "";
+    console.log(range);
+
+    while (password.length < range) {
+      if (isNumberInclude && password.length < range) {
+        password += numbers.charAt(Math.floor(Math.random() * numbers.length));
+      }
+      
+      if (isCharInclude && password.length < range) {
+        password += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+
+      if (password.length < range)
+        password += alphabet.charAt(
+          Math.floor(Math.random() * alphabet.length)
+        );
+    }
+    return password;
+  }
 
   function handleRangeInput(e) {
     setRange(e.target.value);
+  }
+
+  function handleIsNumberInclude() {
+    setIsNumberInclude((prev) => !prev);
+  }
+
+  function handleIsCharInclude() {
+    setIsCharInclude((prev) => !isCharInclude);
+    // console.log(isCharInclude); // react runs Asynchronously. that' why this not showing updated value. if you want to see use useEffect
   }
 
   return (
@@ -47,22 +106,32 @@ export default function MainPage() {
               id="rangeInput"
               min="8"
               max="100"
-              step="1"
-              className="w-full"
+              value={range}
               onChange={handleRangeInput}
+              className="w-full cursor-pointer"
             />
           </div>
           <div className="flex items-center">
             <label htmlFor="checkbox" className="mr-2">
               Include Number
             </label>
-            <input type="checkbox" id="checkbox" />
+            <input
+              type="checkbox"
+              id="checkbox"
+              checked={isNumberInclude}
+              onChange={handleIsNumberInclude}
+            />
           </div>
           <div className="flex items-center">
             <label htmlFor="checkbox" className="mr-2">
               Include Characters
             </label>
-            <input type="checkbox" id="checkbox" />
+            <input
+              type="checkbox"
+              id="checkbox"
+              checked={isCharInclude}
+              onChange={handleIsCharInclude}
+            />
           </div>
         </div>
       </div>
